@@ -1,0 +1,12 @@
+{
+  "name": "personal-wealth-app",
+  "version": "1.0.0",
+  "description": "Personal financial dashboard",
+  "scripts": {
+    "dev": "concurrently \"pnpm --filter server dev\" \"pnpm --filter client dev\"",
+    "install:all": "pnpm install"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}

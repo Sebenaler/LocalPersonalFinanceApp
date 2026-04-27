@@ -1,0 +1,11 @@
+node_modules/
+server/node_modules/
+client/node_modules/
+.pnpm-store/
+server/.env
+server/db/wealth.db
+server/data/*.csv
+dist/
+client/dist/
+*.log
+.DS_Store
