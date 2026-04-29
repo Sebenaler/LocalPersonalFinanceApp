@@ -1,6 +1,6 @@
 import { BrowserRouter, Routes, Route, NavLink, Navigate } from 'react-router-dom';
 import {
-  LayoutDashboard, TrendingUp, CreditCard, PiggyBank, Receipt, Menu, DollarSign, ListChecks
+  LayoutDashboard, TrendingUp, CreditCard, PiggyBank, Receipt, Menu, DollarSign, ListChecks, Settings as SettingsIcon
 } from 'lucide-react';
 import { useState } from 'react';
 import Dashboard from './pages/Dashboard';
@@ -9,6 +9,7 @@ import Accounts from './pages/Accounts';
 import Budgets from './pages/Budgets';
 import Bills from './pages/Bills';
 import Transactions from './pages/Purchases';
+import Settings from './pages/Settings';
 
 const NAV = [
   { to: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
@@ -17,6 +18,7 @@ const NAV = [
   { to: '/purchases', label: 'Transactions', icon: ListChecks },
   { to: '/budgets', label: 'Budgets', icon: PiggyBank },
   { to: '/bills', label: 'Bills', icon: Receipt },
+  { to: '/settings', label: 'Settings', icon: SettingsIcon },
 ];
 
 function Sidebar({ open, onClose }) {
@@ -78,6 +80,7 @@ export default function App() {
               <Route path="/purchases" element={<Transactions />} />
               <Route path="/budgets" element={<Budgets />} />
               <Route path="/bills" element={<Bills />} />
+              <Route path="/settings" element={<Settings />} />
             </Routes>
           </main>
         </div>

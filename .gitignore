@@ -6,6 +6,7 @@ server/.env
 server/db/wealth.db
 server/data/*.csv
 dist/
+dist-desktop/
 client/dist/
 *.log
 .DS_Store

@@ -1,6 +1,6 @@
 # Personal Wealth App
 
-A local-first personal finance dashboard for tracking account balances, bills, transactions, budgets, and net worth. The app uses CSV files as its local database, so your financial data stays on your machine by default.
+A local-first personal finance dashboard for tracking account balances, bills, transactions, budgets, and net worth. The app can run as a desktop app and uses CSV files as its local database, so your financial data stays on your machine by default.
 
 ## Features
 
@@ -16,10 +16,17 @@ A local-first personal finance dashboard for tracking account balances, bills, t
 
 - React + Vite
 - Express
+- Electron
 - pnpm workspaces
 - CSV files for local persistence
 
-## Requirements
+## Normal Use
+
+Install the desktop app for your operating system and open **Personal Wealth App**. No terminal commands are needed.
+
+The desktop app starts its local API internally and saves CSV data in your operating system's per-user app data folder.
+
+## Developer Requirements
 
 Install these first:
 
@@ -47,7 +54,7 @@ Install dependencies:
 pnpm install
 ```
 
-Start the app:
+Start the browser development app:
 
 ```bash
 pnpm dev
@@ -58,12 +65,34 @@ Open:
 - App: http://localhost:5173
 - API: http://localhost:3001
 
+Run the desktop development app:
+
+```bash
+pnpm desktop:dev
+```
+
+Build a desktop installer:
+
+```bash
+pnpm desktop:dist
+```
+
+Installers are written to `dist-desktop/`.
+
 ## Local Data Storage
 
-The app stores data in CSV files under:
+In browser development, the app stores data in CSV files under:
 
 ```text
 server/data/
+```
+
+In the packaged desktop app, data is stored in:
+
+```text
+Windows: %APPDATA%/Personal Wealth App/data
+macOS: ~/Library/Application Support/Personal Wealth App/data
+Linux: ~/.config/Personal Wealth App/data
 ```
 
 The server creates these files automatically when it starts:
@@ -76,7 +105,20 @@ The server creates these files automatically when it starts:
 
 These files are intentionally ignored by Git because they can contain private financial data.
 
+## Backups
+
+The desktop app includes backup tools under **Settings**:
+
+- **Export Backup** downloads a JSON backup containing accounts, transactions, budgets, bills, and net worth history.
+- **Import Backup** restores from a JSON backup and replaces the current local app data.
+
+Keep backup files somewhere private and trusted.
+
 ## Important Privacy Note
+
+Your financial data is stored locally on your computer. The app does not intentionally upload accounts, transactions, budgets, bills, CSV files, or backups to a hosted service.
+
+Anyone with access to your computer account or backup files may be able to read that data. Backups are not encrypted by default.
 
 Do not commit your personal financial data.
 
@@ -168,10 +210,11 @@ pnpm --filter client dev
 
 ```text
 client/              React app
+electron/            Desktop app shell
 server/              Express API
 server/db/           CSV database adapter
 server/routes/       API routes
-server/data/         Local CSV data, gitignored
+server/data/         Browser development CSV data, gitignored
 ```
 
 ## Disclaimer
