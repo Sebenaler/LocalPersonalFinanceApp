@@ -2,11 +2,52 @@
   "name": "personal-wealth-app",
   "version": "1.0.0",
   "description": "Personal financial dashboard",
+  "main": "electron/main.js",
   "scripts": {
     "dev": "concurrently \"pnpm --filter server dev\" \"pnpm --filter client dev\"",
+    "build": "pnpm --filter client build",
+    "desktop:dev": "concurrently \"pnpm --filter server dev\" \"pnpm --filter client dev\" \"electron .\"",
+    "desktop:pack": "pnpm build && electron-builder --dir",
+    "desktop:dist": "pnpm build && electron-builder",
     "install:all": "pnpm install"
   },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.18.3"
+  },
   "devDependencies": {
-    "concurrently": "^8.2.2"
+    "concurrently": "^8.2.2",
+    "electron": "^30.5.1",
+    "electron-builder": "^24.13.3"
+  },
+  "build": {
+    "appId": "com.personalwealth.app",
+    "productName": "Personal Wealth App",
+    "files": [
+      "electron/**",
+      "server/**",
+      "client/dist/**",
+      "package.json"
+    ],
+    "directories": {
+      "output": "dist-desktop"
+    },
+    "win": {
+      "target": "nsis",
+      "signAndEditExecutable": false,
+      "signDlls": false
+    },
+    "mac": {
+      "target": "dmg"
+    },
+    "linux": {
+      "target": "AppImage"
+    }
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "electron",
+      "esbuild"
+    ]
   }
 }

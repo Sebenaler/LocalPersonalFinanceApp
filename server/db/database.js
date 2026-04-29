@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const DATA_DIR = path.join(__dirname, '..', 'data');
+const DATA_DIR = process.env.PERSONAL_WEALTH_DATA_DIR || path.join(__dirname, '..', 'data');
 
 const tables = {
   accounts: {
@@ -134,6 +134,42 @@ function writeTable(table, rows) {
     ...rows.map(row => config.columns.map(column => escapeCell(row[column])).join(',')),
   ];
   fs.writeFileSync(csvPath(table), `${lines.join('\n')}\n`);
+}
+
+function exportData() {
+  return {
+    version: 1,
+    exported_at: new Date().toISOString(),
+    tables: Object.fromEntries(Object.keys(tables).map(table => [table, readTable(table)])),
+  };
+}
+
+function importData(backup) {
+  if (!backup || typeof backup !== 'object' || !backup.tables || typeof backup.tables !== 'object') {
+    throw new Error('Invalid backup file');
+  }
+
+  for (const table of Object.keys(tables)) {
+    if (!Array.isArray(backup.tables[table])) {
+      throw new Error(`Backup is missing ${table}`);
+    }
+  }
+
+  const nextTables = {};
+
+  for (const [table, config] of Object.entries(tables)) {
+    const rows = backup.tables[table].map(row => {
+      if (!row || typeof row !== 'object' || Array.isArray(row)) {
+        throw new Error(`Invalid row in ${table}`);
+      }
+      return Object.fromEntries(config.columns.map(column => [column, row[column] ?? null]));
+    });
+    nextTables[table] = rows;
+  }
+
+  for (const [table, rows] of Object.entries(nextTables)) {
+    writeTable(table, rows);
+  }
 }
 
 function insert(table, values) {
@@ -411,6 +447,8 @@ init();
 
 module.exports = {
   prepare,
+  exportData,
+  importData,
   exec() {},
   pragma() {},
 };
