@@ -5,7 +5,8 @@
   "main": "electron/main.js",
   "scripts": {
     "dev": "concurrently \"pnpm --filter server dev\" \"pnpm --filter client dev\"",
-    "build": "pnpm --filter client build",
+    "build": "pnpm --filter client build && pnpm build:server",
+    "build:server": "esbuild server/index.js --bundle --platform=node --format=cjs --outfile=dist-server/index.cjs",
     "desktop:dev": "concurrently \"pnpm --filter server dev\" \"pnpm --filter client dev\" \"electron .\"",
     "desktop:pack": "pnpm build && electron-builder --dir",
     "desktop:dist": "pnpm build && electron-builder",
@@ -18,14 +19,15 @@
   "devDependencies": {
     "concurrently": "^8.2.2",
     "electron": "^30.5.1",
-    "electron-builder": "^24.13.3"
+    "electron-builder": "^24.13.3",
+    "esbuild": "^0.21.5"
   },
   "build": {
     "appId": "com.personalwealth.app",
     "productName": "Personal Wealth App",
     "files": [
       "electron/**",
-      "server/**",
+      "dist-server/**",
       "client/dist/**",
       "package.json"
     ],
