@@ -79,6 +79,14 @@ pnpm desktop:dist
 
 Installers are written to `dist-desktop/`.
 
+Desktop app icons are loaded from:
+
+```text
+build/icon.ico
+build/icon.icns
+build/icon.png
+```
+
 ## Local Data Storage
 
 In browser development, the app stores data in CSV files under:
