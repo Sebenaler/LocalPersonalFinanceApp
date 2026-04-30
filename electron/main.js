@@ -3,6 +3,8 @@ const path = require('path');
 const fs = require('fs');
 
 let server;
+let mainWindow;
+const singleInstanceLock = app.requestSingleInstanceLock();
 
 function isDev() {
   return !app.isPackaged;
@@ -15,7 +17,7 @@ function iconPath() {
 }
 
 function createWindow(url) {
-  const win = new BrowserWindow({
+  mainWindow = new BrowserWindow({
     width: 1280,
     height: 860,
     minWidth: 1024,
@@ -28,12 +30,16 @@ function createWindow(url) {
     },
   });
 
-  win.removeMenu();
-  loadUrlWithRetry(win, url);
+  mainWindow.removeMenu();
+  loadUrlWithRetry(mainWindow, url);
 
-  win.webContents.setWindowOpenHandler(({ url: nextUrl }) => {
+  mainWindow.webContents.setWindowOpenHandler(({ url: nextUrl }) => {
     shell.openExternal(nextUrl);
     return { action: 'deny' };
+  });
+
+  mainWindow.on('closed', () => {
+    mainWindow = null;
   });
 }
 
@@ -62,16 +68,26 @@ function startLocalServer() {
   });
 }
 
-app.whenReady().then(async () => {
-  const localUrl = await startLocalServer();
-  createWindow(isDev() ? 'http://localhost:5173' : localUrl);
-
-  app.on('activate', () => {
-    if (BrowserWindow.getAllWindows().length === 0) {
-      createWindow(isDev() ? 'http://localhost:5173' : localUrl);
-    }
+if (!singleInstanceLock) {
+  app.quit();
+} else {
+  app.on('second-instance', () => {
+    if (!mainWindow) return;
+    if (mainWindow.isMinimized()) mainWindow.restore();
+    mainWindow.focus();
   });
-});
+
+  app.whenReady().then(async () => {
+    const localUrl = await startLocalServer();
+    createWindow(isDev() ? 'http://localhost:5173' : localUrl);
+
+    app.on('activate', () => {
+      if (BrowserWindow.getAllWindows().length === 0) {
+        createWindow(isDev() ? 'http://localhost:5173' : localUrl);
+      }
+    });
+  });
+}
 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') app.quit();
