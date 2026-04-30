@@ -1,10 +1,17 @@
 const { app, BrowserWindow, shell } = require('electron');
 const path = require('path');
+const fs = require('fs');
 
 let server;
 
 function isDev() {
   return !app.isPackaged;
+}
+
+function iconPath() {
+  const fileName = process.platform === 'win32' ? 'icon.ico' : 'icon.png';
+  const candidate = path.join(__dirname, '..', 'build', fileName);
+  return fs.existsSync(candidate) ? candidate : undefined;
 }
 
 function createWindow(url) {
@@ -14,6 +21,7 @@ function createWindow(url) {
     minWidth: 1024,
     minHeight: 700,
     title: 'Personal Wealth App',
+    icon: iconPath(),
     webPreferences: {
       contextIsolation: true,
       nodeIntegration: false,
