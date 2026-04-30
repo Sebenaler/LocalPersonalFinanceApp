@@ -17,7 +17,7 @@ A local-first desktop finance dashboard for tracking account balances, bills, tr
 Download the latest Windows installer from the GitHub Releases page:
 
 ```text
-Personal Wealth App Setup 1.0.0.exe
+Personal Wealth App Setup 2.0.1.exe
 ```
 
 Run the installer, then open **Personal Wealth App** from your Start menu or desktop shortcut.
