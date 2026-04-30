@@ -57,7 +57,7 @@ function startLocalServer() {
     process.env.CLIENT_DIST_DIR = path.join(__dirname, '..', 'client', 'dist');
   }
 
-  const { createApp } = require('../server');
+  const { createApp } = isDev() ? require('../server') : require('../dist-server/index.cjs');
   const localApp = createApp();
 
   return new Promise((resolve) => {
